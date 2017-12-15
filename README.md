@@ -1,4 +1,4 @@
-C++ Minimal Attribute Engine
+C++ Minimal Attribute Engine (WIP)
 ===============================================
 
 This class is a header-only templated attribute engine, in which
