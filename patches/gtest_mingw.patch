@@ -1,15 +1,9 @@
-commit be6ea486dbe1d01850f8371a9ebe4a700f403301
-Author: Vincent Richomme <vincent.richomme@carestream.com>
-Date:   Thu Jan 12 10:11:43 2017 +0100
-
-    FIx gtest on mingw
-
-diff --git a/src/test/gtest/include/gtest/internal/gtest-port.h b/src/test/gtest/include/gtest/internal/gtest-port.h
-index f376dfa..14acd58 100644
---- a/src/test/gtest/include/gtest/internal/gtest-port.h
-+++ b/src/test/gtest/include/gtest/internal/gtest-port.h
-@@ -614,7 +614,7 @@ struct _RTL_CRITICAL_SECTION;
-     || GTEST_OS_QNX)
+diff --git a/googletest/include/gtest/internal/gtest-port.h b/googletest/include/gtest/internal/gtest-port.h
+index 0094ed5..7efb586 100644
+--- a/googletest/include/gtest/internal/gtest-port.h
++++ b/googletest/include/gtest/internal/gtest-port.h
+@@ -604,7 +604,7 @@ struct _RTL_CRITICAL_SECTION;
+     || GTEST_OS_QNX || GTEST_OS_FREEBSD || GTEST_OS_NACL)
  #endif  // GTEST_HAS_PTHREAD
  
 -#if GTEST_HAS_PTHREAD
@@ -17,7 +11,7 @@ index f376dfa..14acd58 100644
  // gtest-port.h guarantees to #include <pthread.h> when GTEST_HAS_PTHREAD is
  // true.
  # include <pthread.h>  // NOLINT
-@@ -1409,7 +1409,7 @@ extern ::std::vector<testing::internal::string> g_argvs;
+@@ -1441,7 +1441,7 @@ void SetInjectableArgvs(const ::std::vector<testing::internal::string>*
  
  // Defines synchronization primitives.
  #if GTEST_IS_THREADSAFE
@@ -26,10 +20,10 @@ index f376dfa..14acd58 100644
  // Sleeps for (roughly) n milliseconds.  This function is only for testing
  // Google Test's own constructs.  Don't use it in user tests, either
  // directly or indirectly.
-@@ -1423,7 +1423,7 @@ inline void SleepMilliseconds(int n) {
- # endif  // GTEST_HAS_PTHREAD
+@@ -1458,7 +1458,7 @@ inline void SleepMilliseconds(int n) {
+ // Notification has already been imported into the namespace.
+ // Nothing to do here.
  
- # if 0  // OS detection
 -# elif GTEST_HAS_PTHREAD
 +# elif GTEST_HAS_PTHREAD && !GTEST_OS_WINDOWS_MINGW
  // Allows a controller thread to pause execution of newly created
