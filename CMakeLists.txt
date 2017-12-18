@@ -12,7 +12,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.9)
 PROJECT(cpp-minimal-attribute-engine CXX)
 
 IF(NOT CMAKE_BUILD_TYPE)
-    SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "CMake build type")
+    SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "CMake build type" FORCE)
 ENDIF()
 
 ENABLE_TESTING()

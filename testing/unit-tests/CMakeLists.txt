@@ -8,6 +8,7 @@
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR})
 
 # Build GoogleTest
+SET(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 ADD_SUBDIRECTORY(googletest/googletest)
 
 ADD_EXECUTABLE(attribute_engine_test attribute_engine_test.cpp)
