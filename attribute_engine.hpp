@@ -34,7 +34,7 @@ class attribute_engine
         attribute_engine& operator=(const attribute_engine&) = default;
         attribute_engine& operator=(attribute_engine&&) = default;
 
-        T get_attribute(
+        T get_attribute_value(
             const std::string& attribute_name
         )
         {
@@ -58,7 +58,7 @@ class attribute_engine
             }
         }
 
-        void set_attribute(
+        void set_attribute_value(
             const std::string& attribute_name,
             const T& value
         )

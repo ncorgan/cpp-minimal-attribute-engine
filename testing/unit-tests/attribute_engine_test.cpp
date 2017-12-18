@@ -9,6 +9,11 @@
 
 #include <gtest/gtest.h>
 
+#include <functional>
+#include <vector>
+
+// Minimal test functions
+
 static inline int int_getter()
 {
     return 5;
@@ -18,6 +23,93 @@ static inline void int_setter(int num)
 {
     (void)num;
 }
+
+// Test class
+
+class attribute_test_class
+{
+    public:
+        attribute_test_class():
+            _string_attribute_engine(),
+            _string_vector({"A","B"})
+        {
+            _register_attributes();
+        }
+
+        std::string get_string_attribute(
+            const std::string& attribute_name
+        )
+        {
+            return _string_attribute_engine.get_attribute_value(
+                       attribute_name
+                   );
+        }
+
+        void set_string_attribute(
+            const std::string& attribute_name,
+            const std::string& value
+        )
+        {
+            _string_attribute_engine.set_attribute_value(
+                attribute_name,
+                value
+            );
+        }
+
+    private:
+        attribute_engine<std::string> _string_attribute_engine;
+
+        std::vector<std::string> _string_vector;
+
+        std::string _get_string_from_vector(
+            size_t index
+        )
+        {
+            return _string_vector.at(index);
+        }
+
+        void _set_string_in_vector(
+            size_t index,
+            const std::string& value
+        )
+        {
+            _string_vector.at(index) = value;
+        }
+
+        void _register_attributes()
+        {
+            using namespace std::placeholders;
+
+            _string_attribute_engine.register_attribute_fcns(
+                "First string",
+                std::bind(
+                    &attribute_test_class::_get_string_from_vector,
+                    this,
+                    0
+                ),
+                std::bind(
+                    &attribute_test_class::_set_string_in_vector,
+                    this,
+                    0,
+                    _1
+                )
+            );
+            _string_attribute_engine.register_attribute_fcns(
+                "Second string",
+                std::bind(
+                    &attribute_test_class::_get_string_from_vector,
+                    this,
+                    1
+                ),
+                std::bind(
+                    &attribute_test_class::_set_string_in_vector,
+                    this,
+                    1,
+                    _1
+                )
+            );
+        }
+};
 
 TEST(cpp_attribute_test, test_registering)
 {
@@ -29,8 +121,8 @@ TEST(cpp_attribute_test, test_registering)
         int_setter
     );
 
-    EXPECT_EQ(5, int_attribute_engine.get_attribute("Attribute 1"));
-    int_attribute_engine.set_attribute("Attribute 1", 0);
+    EXPECT_EQ(5, int_attribute_engine.get_attribute_value("Attribute 1"));
+    int_attribute_engine.set_attribute_value("Attribute 1", 0);
 
     // Test a read-only attribute.
     int_attribute_engine.register_attribute_fcns(
@@ -39,9 +131,9 @@ TEST(cpp_attribute_test, test_registering)
         nullptr // No setter
     );
 
-    EXPECT_EQ(5, int_attribute_engine.get_attribute("Attribute 2"));
+    EXPECT_EQ(5, int_attribute_engine.get_attribute_value("Attribute 2"));
     EXPECT_THROW(
-        int_attribute_engine.set_attribute("Attribute 2", 0);
+        int_attribute_engine.set_attribute_value("Attribute 2", 0);
     , std::invalid_argument);
 
     // Test a write-only attribute.
@@ -52,9 +144,9 @@ TEST(cpp_attribute_test, test_registering)
     );
 
     EXPECT_THROW(
-        (void)int_attribute_engine.get_attribute("Attribute 3");
+        (void)int_attribute_engine.get_attribute_value("Attribute 3");
     , std::invalid_argument);
-    int_attribute_engine.set_attribute("Attribute 3", 0);
+    int_attribute_engine.set_attribute_value("Attribute 3", 0);
 
     // TODO: test overriding existing attribute
 }
@@ -122,4 +214,21 @@ TEST(cpp_attribute_test, test_valid_values)
         valid_values,
         int_attribute_engine.get_attribute_valid_values(attribute_name)
     );
+}
+
+TEST(cpp_attribute_test, test_binding_class_functions)
+{
+    attribute_test_class test_class;
+
+    // Test default values.
+    EXPECT_EQ("A", test_class.get_string_attribute("First string"));
+    EXPECT_EQ("B", test_class.get_string_attribute("Second string"));
+
+    // Set values.
+    test_class.set_string_attribute("First string", "C");
+    test_class.set_string_attribute("Second string", "D");
+
+    // Test new values.
+    EXPECT_EQ("C", test_class.get_string_attribute("First string"));
+    EXPECT_EQ("D", test_class.get_string_attribute("Second string"));
 }
