@@ -1,0 +1,76 @@
+language: generic
+os: linux
+dist: trusty
+
+matrix:
+  include:
+    - compiler: gcc
+      env:
+        - CC=gcc
+        - CXX=g++
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - CC=gcc-5
+        - CXX=g++-5
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env:
+        - CC=gcc-6
+        - CXX=g++-6
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - CC=gcc-7
+        - CXX=g++-7
+    - compiler: clang
+      env:
+        - CC=clang
+        - CXX=clang++
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-4.0
+          packages:
+            - clang-4.0
+      env:
+        - CC=clang-4.0
+        - CXX=clang++-4.0
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - clang-5.0
+      env:
+        - CC=clang-5.0
+        - CXX=clang++-5.0
+
+sudo: required
+dist: trusty
+
+before_install:
+  - git submodule update --init --recursive
+
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - ctest
