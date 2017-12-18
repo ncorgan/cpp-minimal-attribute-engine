@@ -109,15 +109,58 @@ class attribute_engine
             return ret;
         }
 
+        const std::vector<T>& get_attribute_valid_values(
+            const std::string& attribute_name
+        )
+        {
+            if(_attribute_fcn_map.count(attribute_name) == 0)
+            {
+                throw std::invalid_argument("Invalid attribute.");
+            }
+            else if(_attribute_valid_values_map.count(attribute_name) == 0)
+            {
+                throw std::invalid_argument("No valid values registered.");
+            }
+            else
+            {
+                return _attribute_valid_values_map.at(attribute_name);
+            }
+        }
+
+        void register_attribute_valid_values(
+            const std::string& attribute_name,
+            const std::vector<T>& valid_values
+        )
+        {
+            register_attribute_valid_values(
+                attribute_name,
+                std::move(std::vector<T>(valid_values))
+            );
+        }
+
+        void register_attribute_valid_values(
+            const std::string& attribute_name,
+            std::vector<T>&& valid_values
+        )
+        {
+            _attribute_valid_values_map.emplace(
+                std::move(std::string(attribute_name)),
+                std::move(valid_values)
+            );
+        }
+
     private:
         struct attribute_fcn_pair_t
         {
             getter_fcn<T> getter;
             setter_fcn<T> setter;
         };
-        using attribute_fcn_map_t = std::unordered_map<std::string, attribute_fcn_pair_t>;
 
+        using attribute_fcn_map_t = std::unordered_map<std::string, attribute_fcn_pair_t>;
         attribute_fcn_map_t _attribute_fcn_map;
+
+        using attribute_valid_values_t = std::unordered_map<std::string, std::vector<T> >;
+        attribute_valid_values_t _attribute_valid_values_map;
 };
 
 #endif /* INCLUDED_ATTRIBUTE_ENGINE_HPP */

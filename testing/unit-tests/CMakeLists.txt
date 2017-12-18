@@ -5,6 +5,8 @@
 # or copy at http://opensource.org/licenses/MIT)
 #
 
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR})
+
 # Build GoogleTest
 ADD_SUBDIRECTORY(googletest/googletest)
 
