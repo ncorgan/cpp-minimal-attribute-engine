@@ -18,6 +18,10 @@ IF(WIN32)
         SET_SOURCE_FILES_PROPERTIES(attribute_engine_test.cpp
             PROPERTIES COMPILE_FLAGS "-std=c++11"
         )
+    ELSE()
+        SET_SOURCE_FILES_PROPERTIES(attribute_engine_test.cpp
+            PROPERTIES COMPILE_FLAGS "/MP /EHsc"
+        )
     ENDIF()
 
     ADD_TEST(
