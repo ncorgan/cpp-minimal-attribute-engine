@@ -21,6 +21,5 @@ build_script:
   - mkdir build
   - cd build
   - cmake -G "%GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=/D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING ..
-  - dir
   - msbuild /p:configuration=Release ALL_BUILD.vcxproj
   - ctest
