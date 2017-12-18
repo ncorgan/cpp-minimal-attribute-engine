@@ -1,5 +1,8 @@
 environment:
   matrix:
+    - GENERATOR_NAME: "MinGW Makefiles"
+    - MINGW_DIR: "C:\\MinGW"
+
     - GENERATOR_NAME: "Visual Studio 12 2013"
     - GENERATOR_NAME: "Visual Studio 12 2013 Win64"
     - GENERATOR_NAME: "Visual Studio 14 2015"
@@ -15,11 +18,17 @@ platform: x64
 configuration: Release
 
 install:
-  - git submodule update --init --recursive
+- git submodule update --init --recursive
 
 build_script:
-  - mkdir build
-  - cd build
-  - cmake -G "%GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=/D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING ..
-  - msbuild /p:configuration=Release ALL_BUILD.vcxproj
-  - ctest
+
+# Set up MinGW paths if needed
+# Rename sh.exe as sh.exe in PATH interferes with MinGW
+- if defined MINGW_DIR rename "C:\Program Files\Git\usr\bin\sh.exe" "sh2.exe"
+- if defined MINGW_DIR set PATH="%MINGW_DIR%\\bin;%PATH%"
+
+- mkdir build
+- cd build
+- cmake -G "%GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=/D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING ..
+- cmake --build . --config "Release"
+- ctest
