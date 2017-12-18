@@ -30,10 +30,13 @@ class attribute_engine
         ~attribute_engine() {};
 
         attribute_engine(const attribute_engine&) = default;
-        attribute_engine(attribute_engine&&) = default;
-
         attribute_engine& operator=(const attribute_engine&) = default;
+
+#if !defined(_MSC_VER) || (_MSC_VER >= 2015)
+        // Defaulted move constructors/operators aren't supported by VS2013
+        attribute_engine(attribute_engine&&) = default;
         attribute_engine& operator=(attribute_engine&&) = default;
+#endif
 
         T get_attribute_value(
             const std::string& attribute_name
