@@ -12,3 +12,15 @@ ADD_SUBDIRECTORY(googletest/googletest)
 
 ADD_EXECUTABLE(attribute_engine_test attribute_engine_test.cpp)
 TARGET_LINK_LIBRARIES(attribute_engine_test gtest gtest_main)
+
+IF(WIN32)
+    ADD_TEST(
+        attribute_engine_test
+        ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/attribute_engine_test.exe
+    )
+ELSE()
+    ADD_TEST(
+        attribute_engine_test
+        ${CMAKE_CURRENT_BINARY_DIR}/attribute_engine_test
+    )
+ENDIF()
