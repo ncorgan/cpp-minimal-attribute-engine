@@ -3,11 +3,11 @@ environment:
     - GENERATOR_NAME: "MinGW Makefiles"
       MINGW_DIR: "C:\\MinGW"
 
-    - GENERATOR_NAME: "MinGW Makefiles"
-      MINGW_DIR: "C:\\mingw-w64\\i686-6.3.0-posix-dwarf-rt_v5-rev1"
+#    - GENERATOR_NAME: "MinGW Makefiles"
+#      MINGW_DIR: "C:\\mingw-w64\\i686-6.3.0-posix-dwarf-rt_v5-rev1"
 
-    - GENERATOR_NAME: "MinGW Makefiles"
-      MINGW_DIR: "C:\\mingw-w64\\x86_64-6.3.0-posix-seh-rt_v5-rev1"
+#    - GENERATOR_NAME: "MinGW Makefiles"
+#      MINGW_DIR: "C:\\mingw-w64\\x86_64-6.3.0-posix-seh-rt_v5-rev1"
 
     - GENERATOR_NAME: "Visual Studio 12 2013"
     - GENERATOR_NAME: "Visual Studio 12 2013 Win64"
@@ -30,6 +30,9 @@ build_script:
 
 # Set up MinGW paths if needed
 # Rename sh.exe as sh.exe in PATH interferes with MinGW
+- if defined MINGW_DIR cd testing/unit-tests/googletest
+- if defined MINGW_DIR git apply ../../../patches/gtest_mingw.patch
+- if defined MINGW_DIR cd ../../..
 - if defined MINGW_DIR rename "C:\Program Files\Git\usr\bin\sh.exe" "sh2.exe"
 - if defined MINGW_DIR set "PATH=%MINGW_DIR%\bin;%PATH%"
 

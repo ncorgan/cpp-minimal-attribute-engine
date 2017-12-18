@@ -1,0 +1,37 @@
+commit be6ea486dbe1d01850f8371a9ebe4a700f403301
+Author: Vincent Richomme <vincent.richomme@carestream.com>
+Date:   Thu Jan 12 10:11:43 2017 +0100
+
+    FIx gtest on mingw
+
+diff --git a/src/test/gtest/include/gtest/internal/gtest-port.h b/src/test/gtest/include/gtest/internal/gtest-port.h
+index f376dfa..14acd58 100644
+--- a/src/test/gtest/include/gtest/internal/gtest-port.h
++++ b/src/test/gtest/include/gtest/internal/gtest-port.h
+@@ -614,7 +614,7 @@ struct _RTL_CRITICAL_SECTION;
+     || GTEST_OS_QNX)
+ #endif  // GTEST_HAS_PTHREAD
+ 
+-#if GTEST_HAS_PTHREAD
++#if GTEST_HAS_PTHREAD && !GTEST_OS_WINDOWS_MINGW
+ // gtest-port.h guarantees to #include <pthread.h> when GTEST_HAS_PTHREAD is
+ // true.
+ # include <pthread.h>  // NOLINT
+@@ -1409,7 +1409,7 @@ extern ::std::vector<testing::internal::string> g_argvs;
+ 
+ // Defines synchronization primitives.
+ #if GTEST_IS_THREADSAFE
+-# if GTEST_HAS_PTHREAD
++# if GTEST_HAS_PTHREAD && !GTEST_OS_WINDOWS_MINGW
+ // Sleeps for (roughly) n milliseconds.  This function is only for testing
+ // Google Test's own constructs.  Don't use it in user tests, either
+ // directly or indirectly.
+@@ -1423,7 +1423,7 @@ inline void SleepMilliseconds(int n) {
+ # endif  // GTEST_HAS_PTHREAD
+ 
+ # if 0  // OS detection
+-# elif GTEST_HAS_PTHREAD
++# elif GTEST_HAS_PTHREAD && !GTEST_OS_WINDOWS_MINGW
+ // Allows a controller thread to pause execution of newly created
+ // threads until notified.  Instances of this class must be created
+ // and destroyed in the controller thread.
