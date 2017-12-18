@@ -32,8 +32,8 @@ class attribute_engine
         attribute_engine(const attribute_engine&) = default;
         attribute_engine& operator=(const attribute_engine&) = default;
 
-#if !defined(_MSC_VER) || (_MSC_VER >= 1800)
-        // Defaulted move constructors/operators aren't supported by VS2013
+#if !defined(_MSC_VER) || (_MSC_VER >= 1900)
+        // Defaulted move constructors/operators aren't supported until VS2015
         attribute_engine(attribute_engine&&) = default;
         attribute_engine& operator=(attribute_engine&&) = default;
 #endif
