@@ -1,7 +1,7 @@
 environment:
   matrix:
-    - GENERATOR_NAME: "MinGW Makefiles"
-      MINGW_DIR: "C:\\MinGW"
+#    - GENERATOR_NAME: "MinGW Makefiles"
+#      MINGW_DIR: "C:\\MinGW"
 
 #    - GENERATOR_NAME: "MinGW Makefiles"
 #      MINGW_DIR: "C:\\mingw-w64\\i686-6.3.0-posix-dwarf-rt_v5-rev1"
