@@ -11,7 +11,7 @@ callers and setters are registered.
 Supported Platforms
 -------------------------------------
 
-This class should be able to be used with any compiler that supports C++-11.
+This class should be able to be used with any compiler that supports C++11.
 
 Using [Travis](https://travis-ci.org/ncorgan/libpkmn) and
 [AppVeyor](https://ci.appveyor.com/project/ncorgan/libpkmn), every push to this
@@ -20,6 +20,8 @@ repository is automatically tested under the following configurations:
  * Ubuntu 14.04 (x64)
    * GCC: 4.8.4, 5.4.1, 6.2.0, 7.2.0
    * Clang: 3.9.0, 4.0.1, 5.0.0
+ * OS X 10.12.6
+   * AppleClang: 8.1.0.8020042
  * Windows Server 2012 R2 (x64)
    * MSVC: 2013, 2015 (Win32, x64)
  * Windows Server 2016 (x64)
