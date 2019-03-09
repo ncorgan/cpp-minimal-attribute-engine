@@ -153,6 +153,22 @@ TEST(cpp_attribute_test, test_registering)
     , std::invalid_argument);
     int_attribute_engine.set_attribute_value("Attribute 3", 0);
 
+    // Test registering by moving parameters.
+    auto getter_to_move = &getter_fcn;
+    auto setter_to_move = &setter_fcn;
+
+    const std::string attribute_name("Attribute 4");
+    std::string attribute_name_to_move(attribute_name);
+
+    int_attribute_engine.register_attribute_fcns(
+        std::move(attribute_name_to_move),
+        std::move(getter_to_move),
+        std::move(setter_to_move)
+    );
+
+    EXPECT_EQ(5, int_attribute_engine.get_attribute_value(attribute_name));
+    int_attribute_engine.set_attribute_value(attribute_name, 0);
+
     // TODO: test overriding existing attribute
 }
 

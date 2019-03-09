@@ -50,6 +50,12 @@ class attribute_engine
             const setter_fcn<val_type>& setter
         );
 
+        void register_attribute_fcns(
+            key_type&& r_attribute_name,
+            getter_fcn<val_type>&& r_getter,
+            setter_fcn<val_type>&& r_setter
+        );
+
         std::vector<key_type> get_attribute_names();
 
         const std::vector<val_type>& get_attribute_valid_values(

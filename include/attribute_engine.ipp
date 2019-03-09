@@ -72,8 +72,27 @@ void attribute_engine<key_type, val_type>::register_attribute_fcns(
     attribute_fcn_pair_t attribute_fcn_pair = {getter, setter};
 
     _attribute_fcn_map.emplace(
-        attribute_name,
-        attribute_fcn_pair
+        std::move(std::string(attribute_name)),
+        std::move(attribute_fcn_pair)
+    );
+}
+
+template <typename key_type, typename val_type>
+void attribute_engine<key_type, val_type>::register_attribute_fcns(
+    key_type&& r_attribute_name,
+    getter_fcn<val_type>&& r_getter,
+    setter_fcn<val_type>&& r_setter
+)
+{
+    attribute_fcn_pair_t attribute_fcn_pair =
+    {
+        std::move(r_getter),
+        std::move(r_setter)
+    };
+
+    _attribute_fcn_map.emplace(
+        std::move(r_attribute_name),
+        std::move(attribute_fcn_pair)
     );
 }
 
