@@ -247,7 +247,7 @@ TEST(cpp_attribute_test, test_registering_lambdas)
     auto setter_lambda = [&dummy_struct](int var) { dummy_struct.dummy_field = var; };
 
     const std::string attribute_name("foo");
-    constexpr int attribute_value = 5;
+    const int attribute_value = 5;
 
     engine.register_attribute_fcns(
         attribute_name,
