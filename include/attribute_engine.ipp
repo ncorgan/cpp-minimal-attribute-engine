@@ -14,7 +14,7 @@
 template <typename key_type, typename val_type>
 val_type attribute_engine<key_type, val_type>::get_attribute_value(
     const key_type& attribute_name
-)
+) const
 {
     if(_attribute_fcn_map.count(attribute_name) == 0)
     {
@@ -97,7 +97,7 @@ void attribute_engine<key_type, val_type>::register_attribute_fcns(
 }
 
 template <typename key_type, typename val_type>
-std::vector<key_type> attribute_engine<key_type, val_type>::get_attribute_names()
+std::vector<key_type> attribute_engine<key_type, val_type>::get_attribute_names() const
 {
     std::vector<key_type> ret;
     for(const auto& attribute_iter: _attribute_fcn_map)
@@ -112,7 +112,7 @@ std::vector<key_type> attribute_engine<key_type, val_type>::get_attribute_names(
 template <typename key_type, typename val_type>
 const std::vector<val_type>& attribute_engine<key_type, val_type>::get_attribute_valid_values(
     const key_type& attribute_name
-)
+) const
 {
     if(_attribute_fcn_map.count(attribute_name) == 0)
     {

@@ -37,7 +37,7 @@ class attribute_engine
 
         val_type get_attribute_value(
             const key_type& attribute_name
-        );
+        ) const;
 
         void set_attribute_value(
             const key_type& attribute_name,
@@ -56,11 +56,11 @@ class attribute_engine
             setter_fcn<val_type>&& r_setter
         );
 
-        std::vector<key_type> get_attribute_names();
+        std::vector<key_type> get_attribute_names() const;
 
         const std::vector<val_type>& get_attribute_valid_values(
             const key_type& attribute_name
-        );
+        ) const;
 
         void register_attribute_valid_values(
             const key_type& attribute_name,
