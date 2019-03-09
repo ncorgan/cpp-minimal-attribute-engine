@@ -12,16 +12,17 @@
 #include <unordered_map>
 #include <vector>
 
-template <typename T>
-using getter_fcn = std::function<T(void)>;
-
-template <typename T>
-using setter_fcn = std::function<void(const T&)>;
-
 template <typename key_type, typename val_type>
 class attribute_engine
 {
     public:
+
+        template <typename T>
+        using getter_fcn = std::function<T(void)>;
+
+        template <typename T>
+        using setter_fcn = std::function<void(const T&)>;
+
         attribute_engine() {}
         ~attribute_engine() {};
 

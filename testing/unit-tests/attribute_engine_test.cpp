@@ -9,17 +9,22 @@
 
 #include <gtest/gtest.h>
 
+#ifdef TEST_BOOST_FUNCTION
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+#endif
+
 #include <functional>
 #include <vector>
 
 // Minimal test functions
 
-static inline int int_getter()
+static inline int getter_fcn()
 {
     return 5;
 }
 
-static inline void int_setter(int num)
+static inline void setter_fcn(int num)
 {
     (void)num;
 }
@@ -78,7 +83,7 @@ class attribute_test_class
 
         void _register_attributes()
         {
-            using namespace std::placeholders;
+            using std::placeholders::_1;
 
             _string_attribute_engine.register_attribute_fcns(
                 "First string",
@@ -117,8 +122,8 @@ TEST(cpp_attribute_test, test_registering)
 
     int_attribute_engine.register_attribute_fcns(
         "Attribute 1",
-        int_getter,
-        int_setter
+        getter_fcn,
+        setter_fcn
     );
 
     EXPECT_EQ(5, int_attribute_engine.get_attribute_value("Attribute 1"));
@@ -127,7 +132,7 @@ TEST(cpp_attribute_test, test_registering)
     // Test a read-only attribute.
     int_attribute_engine.register_attribute_fcns(
         "Attribute 2",
-        int_getter,
+        getter_fcn,
         nullptr // No setter
     );
 
@@ -140,7 +145,7 @@ TEST(cpp_attribute_test, test_registering)
     int_attribute_engine.register_attribute_fcns(
         "Attribute 3",
         nullptr, // No getter
-        int_setter
+        setter_fcn
     );
 
     EXPECT_THROW(
@@ -196,8 +201,8 @@ TEST(cpp_attribute_test, test_valid_values)
 
     int_attribute_engine.register_attribute_fcns(
         attribute_name,
-        int_getter,
-        int_setter
+        getter_fcn,
+        setter_fcn
     );
 
     // Attempting to get valid values when the attribute exists but does
@@ -243,18 +248,81 @@ TEST(cpp_attribute_test, test_registering_lambdas)
 
     attribute_engine<std::string, int> engine;
 
-    auto getter_lambda = [&dummy_struct]() { return dummy_struct.dummy_field; };
-    auto setter_lambda = [&dummy_struct](int var) { dummy_struct.dummy_field = var; };
-
     const std::string attribute_name("foo");
     const int attribute_value = 5;
 
     engine.register_attribute_fcns(
         attribute_name,
-        getter_lambda,
-        setter_lambda
+        [&dummy_struct]() {return dummy_struct.dummy_field; },
+        [&dummy_struct](int var) { dummy_struct.dummy_field = var; }
     );
 
     engine.set_attribute_value(attribute_name, attribute_value);
     ASSERT_EQ(attribute_value, engine.get_attribute_value(attribute_name));
 }
+
+TEST(cpp_attribute_test, test_registering_function_pointers)
+{
+    attribute_engine<std::string, int> engine;
+
+    const std::string attribute_name("foo");
+
+    int (*getter_fptr)(void) = &getter_fcn;
+    void (*setter_fptr)(int) = &setter_fcn;
+
+    engine.register_attribute_fcns(
+        attribute_name,
+        getter_fptr,
+        setter_fptr
+    );
+}
+
+#ifdef TEST_BOOST_FUNCTION
+TEST(cpp_attribute_test, test_boost_function)
+{
+    attribute_engine<std::string, int> engine;
+
+    const std::string attribute_name("foo");
+
+    boost::function<int(void)> boost_getter_fcn = &getter_fcn;
+    boost::function<void(int)> boost_setter_fcn = &setter_fcn;
+
+    engine.register_attribute_fcns(
+        attribute_name,
+        boost_getter_fcn,
+        boost_setter_fcn
+    );
+}
+
+TEST(cpp_attribute_test, test_boost_bind)
+{
+    attribute_engine<std::string, std::string> engine;
+
+    // Awkward use of the class, but it provides existing functions
+    attribute_test_class test_class;
+
+    const std::string attribute_name("First string");
+    const std::string attribute_value("Some value");
+
+    auto string_getter = boost::bind(
+                             &attribute_test_class::get_string_attribute,
+                             test_class,
+                             attribute_name
+                         );
+    auto string_setter = boost::bind(
+                             &attribute_test_class::set_string_attribute,
+                             test_class,
+                             attribute_name,
+                             _1
+                         );
+
+    engine.register_attribute_fcns(
+        attribute_name,
+        string_getter,
+        string_setter
+    );
+
+    engine.set_attribute_value(attribute_name, attribute_value);
+    ASSERT_EQ(attribute_value, engine.get_attribute_value(attribute_name));
+}
+#endif

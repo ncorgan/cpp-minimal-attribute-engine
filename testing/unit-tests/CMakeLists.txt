@@ -9,6 +9,10 @@
 SET(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 ADD_SUBDIRECTORY(googletest/googletest)
 
+IF(Boost_FOUND)
+    ADD_DEFINITIONS(-DTEST_BOOST_FUNCTION)
+ENDIF()
+
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
 ADD_EXECUTABLE(attribute_engine_test attribute_engine_test.cpp)
