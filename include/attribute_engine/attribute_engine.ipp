@@ -8,6 +8,8 @@
 #ifndef INCLUDED_ATTRIBUTE_ENGINE_IPP
 #define INCLUDED_ATTRIBUTE_ENGINE_IPP
 
+#include <attribute_engine/detail.hpp>
+
 #include <algorithm>
 #include <exception>
 
@@ -18,7 +20,7 @@ val_type attribute_engine<key_type, val_type>::get_attribute_value(
 {
     if(_attribute_fcn_map.count(attribute_name) == 0)
     {
-        throw std::invalid_argument("Invalid attribute.");
+        throw std::invalid_argument(detail::get_invalid_attribute_error_message(attribute_name));
     }
 
     const attribute_fcn_pair_t& attribute_fcn_pair = _attribute_fcn_map.at(attribute_name);
@@ -28,11 +30,7 @@ val_type attribute_engine<key_type, val_type>::get_attribute_value(
     }
     else
     {
-        key_type error_message = "The attribute \"";
-        error_message += attribute_name;
-        error_message += "\" is write-only.";
-
-        throw std::invalid_argument(error_message);
+        throw std::invalid_argument(detail::get_writeonly_error_message(attribute_name));
     }
 }
 
@@ -44,7 +42,7 @@ void attribute_engine<key_type, val_type>::set_attribute_value(
 {
     if(_attribute_fcn_map.count(attribute_name) == 0)
     {
-        throw std::invalid_argument("Invalid attribute.");
+        throw std::invalid_argument(detail::get_invalid_attribute_error_message(attribute_name));
     }
 
     const attribute_fcn_pair_t& attribute_fcn_pair = _attribute_fcn_map.at(attribute_name);
@@ -54,11 +52,7 @@ void attribute_engine<key_type, val_type>::set_attribute_value(
     }
     else
     {
-        key_type error_message = "The attribute \"";
-        error_message += attribute_name;
-        error_message += "\" is read-only.";
-
-        throw std::invalid_argument(error_message);
+        throw std::invalid_argument(detail::get_readonly_error_message(attribute_name));
     }
 }
 
@@ -116,7 +110,7 @@ const std::vector<val_type>& attribute_engine<key_type, val_type>::get_attribute
 {
     if(_attribute_fcn_map.count(attribute_name) == 0)
     {
-        throw std::invalid_argument("Invalid attribute.");
+        throw std::invalid_argument(detail::get_invalid_attribute_error_message(attribute_name));
     }
     else if(_attribute_valid_values_map.count(attribute_name) == 0)
     {
