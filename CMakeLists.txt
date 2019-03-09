@@ -19,7 +19,9 @@ ENDIF()
 # Find Boost for boost::function testing
 ########################################################################
 FIND_PACKAGE(Boost 1.65)
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+IF(Boost_FOUND)
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+ENDIF()
 
 ENABLE_TESTING()
 ADD_SUBDIRECTORY(testing/unit-tests)
