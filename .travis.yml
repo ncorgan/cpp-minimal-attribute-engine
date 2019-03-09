@@ -79,39 +79,17 @@ matrix:
       env:
         - CC=clang-5.0
         - CXX=clang++-5.0
-    - compiler: clang
-      os: linux
-      addons:
-        apt:
-          sources:
-            - llvm-toolchain-trusty-6.0
-          packages:
-            - clang-6.0
-      env:
-        - CC=clang-6.0
-        - CXX=clang++-6.0
-    - compiler: clang
-      os: linux
-      addons:
-        apt:
-          sources:
-            - llvm-toolchain-trusty-7.0
-          packages:
-            - clang-7.0
-      env:
-        - CC=clang-7.0
-        - CXX=clang++-7.0
-    - compiler: clang
-      os: linux
-      addons:
-        apt:
-          sources:
-            - llvm-toolchain-trusty-8.0
-          packages:
-            - clang-8.0
-      env:
-        - CC=clang-8.0
-        - CXX=clang++-8.0
+#    - compiler: clang
+#      os: linux
+#      addons:
+#        apt:
+#          sources:
+#            - llvm-toolchain-trusty-6.0
+#          packages:
+#            - clang-6.0
+#      env:
+#        - CC=clang-6.0
+#        - CXX=clang++-6.0
     - os: osx
 
 sudo: required
