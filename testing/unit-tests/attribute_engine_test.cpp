@@ -29,7 +29,7 @@ static inline void setter_fcn(int num)
     (void)num;
 }
 
-// Test class
+// Test class containing an attribute engine
 
 class attribute_test_class
 {
@@ -310,32 +310,34 @@ TEST(cpp_attribute_test, test_boost_function)
     );
 }
 
+int getter_for_bind(int int1)
+{
+    (void)int1;
+    return getter_fcn();
+}
+
+void setter_for_bind(int int1, int int2)
+{
+    (void)int1;
+    setter_fcn(int2);
+}
+
 TEST(cpp_attribute_test, test_boost_bind)
 {
-    attribute_engine<std::string, std::string> engine;
+    attribute_engine<std::string, int> engine;
 
-    // Awkward use of the class, but it provides existing functions
-    attribute_test_class test_class;
+    const int int_param = 5;
 
-    const std::string attribute_name("First string");
-    const std::string attribute_value("Some value");
+    auto bound_getter = boost::bind(&getter_for_bind, int_param);
+    auto bound_setter = boost::bind(&setter_for_bind, int_param, _1);
 
-    auto string_getter = boost::bind(
-                             &attribute_test_class::get_string_attribute,
-                             test_class,
-                             attribute_name
-                         );
-    auto string_setter = boost::bind(
-                             &attribute_test_class::set_string_attribute,
-                             test_class,
-                             attribute_name,
-                             _1
-                         );
+    const std::string attribute_name("foo");
+    const int attribute_value = 5;
 
     engine.register_attribute_fcns(
         attribute_name,
-        string_getter,
-        string_setter
+        bound_getter,
+        bound_setter
     );
 
     engine.set_attribute_value(attribute_name, attribute_value);

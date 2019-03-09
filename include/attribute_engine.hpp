@@ -26,8 +26,11 @@ class attribute_engine
         attribute_engine() {}
         ~attribute_engine() {};
 
-        attribute_engine(const attribute_engine&) = default;
-        attribute_engine& operator=(const attribute_engine&) = default;
+        // Don't allow copying. This could wreak havoc if registered
+        // functions were bound to a specific class instance, for
+        // example.
+        attribute_engine(const attribute_engine&) = delete;
+        attribute_engine& operator=(const attribute_engine&) = delete;
 
 #if !defined(_MSC_VER) || (_MSC_VER >= 1900)
         // Defaulted move constructors/operators aren't supported until VS2015
