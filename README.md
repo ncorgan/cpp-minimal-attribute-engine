@@ -12,6 +12,14 @@ underlying function. This allows for the creation of interfaces that
 abstract away private internal classes or to simplify ugly function
 calls by binding them to an attribute under the hood.
 
+The following can be registered as attribute functions:
+ * Function pointers
+ * Lambdas
+ * std::function
+ * std::bind
+ * boost::function
+ * boost::bind
+
 Example Code
 -------------------------------------
 
