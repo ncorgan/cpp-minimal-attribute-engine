@@ -27,7 +27,7 @@ Using [Travis](https://travis-ci.org/ncorgan/cpp-minimal-attribute-engine) and
 every push to this repository is automatically tested under the following configurations:
 
  * Ubuntu 14.04 (x64)
-   * GCC: 4.8.4, 5.4.1, 6.2.0, 7.2.0
+   * GCC: 4.8.4, 5.4.1, 6.2.0, 7.2.0, 8.1.0
    * Clang: 3.9.0, 4.0.1, 5.0.0
  * OS X 10.12.6 (x64)
    * AppleClang: 8.1.0.8020042
@@ -36,6 +36,4 @@ every push to this repository is automatically tested under the following config
  * Windows Server 2016 (x64)
    * MSVC: 2017 (Win32, x64)
 
-Testing and support for more configurations is in progress.
-
-README last updated: 2017/12/17
+README last updated: 2019/03/09
