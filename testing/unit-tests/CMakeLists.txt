@@ -1,15 +1,15 @@
 #
-# Copyright (c) 2017 Nicholas Corgan (n.corgan@gmail.com)
+# Copyright (c) 2017,2019 Nicholas Corgan (n.corgan@gmail.com)
 #
 # Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
 # or copy at http://opensource.org/licenses/MIT)
 #
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR})
-
 # Build GoogleTest
 SET(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 ADD_SUBDIRECTORY(googletest/googletest)
+
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
 ADD_EXECUTABLE(attribute_engine_test attribute_engine_test.cpp)
 TARGET_LINK_LIBRARIES(attribute_engine_test gtest gtest_main)
