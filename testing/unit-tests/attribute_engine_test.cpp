@@ -5,7 +5,7 @@
  * or copy at http://opensource.org/licenses/MIT)
  */
 
-#include "attribute_engine.hpp"
+#include "attribute_engine/attribute_engine.hpp"
 
 #include <gtest/gtest.h>
 
