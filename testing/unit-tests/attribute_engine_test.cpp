@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Nicholas Corgan (n.corgan@gmail.com)
+ * Copyright (c) 2017,2019 Nicholas Corgan (n.corgan@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
@@ -57,7 +57,7 @@ class attribute_test_class
         }
 
     private:
-        attribute_engine<std::string> _string_attribute_engine;
+        attribute_engine<std::string, std::string> _string_attribute_engine;
 
         std::vector<std::string> _string_vector;
 
@@ -113,7 +113,7 @@ class attribute_test_class
 
 TEST(cpp_attribute_test, test_registering)
 {
-    attribute_engine<int> int_attribute_engine;
+    attribute_engine<std::string, int> int_attribute_engine;
 
     int_attribute_engine.register_attribute_fcns(
         "Attribute 1",
@@ -153,7 +153,7 @@ TEST(cpp_attribute_test, test_registering)
 
 TEST(cpp_attribute_test, test_get_attribute_names)
 {
-    attribute_engine<std::string> string_attribute_engine;
+    attribute_engine<std::string, std::string> string_attribute_engine;
 
     // Register some attributes that don't do anything for the sake of test.
     string_attribute_engine.register_attribute_fcns(
@@ -184,7 +184,7 @@ TEST(cpp_attribute_test, test_get_attribute_names)
 
 TEST(cpp_attribute_test, test_valid_values)
 {
-    attribute_engine<int> int_attribute_engine;
+    attribute_engine<std::string, int> int_attribute_engine;
     const std::string attribute_name = "Attribute";
     const std::vector<int> valid_values = {1,2,3,4,5};
 

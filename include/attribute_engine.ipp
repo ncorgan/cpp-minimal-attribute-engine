@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2019 Nicholas Corgan (n.corgan@gmail.com)
  *
- * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
- * or copy at http://opensource.org/licenses/MIT)
+ * Distributed under the MIval_type License (MIval_type) (See accompanying file LICENSE.txt
+ * or copy at http://opensource.org/licenses/MIval_type)
  */
 
 #ifndef INCLUDED_ATTRIBUTE_ENGINE_IPP
@@ -11,9 +11,9 @@
 #include <algorithm>
 #include <exception>
 
-template <typename T>
-T attribute_engine<T>::get_attribute_value(
-    const std::string& attribute_name
+template <typename key_type, typename val_type>
+val_type attribute_engine<key_type, val_type>::get_attribute_value(
+    const key_type& attribute_name
 )
 {
     if(_attribute_fcn_map.count(attribute_name) == 0)
@@ -28,7 +28,7 @@ T attribute_engine<T>::get_attribute_value(
     }
     else
     {
-        std::string error_message = "The attribute \"";
+        key_type error_message = "The attribute \"";
         error_message += attribute_name;
         error_message += "\" is write-only.";
 
@@ -36,10 +36,10 @@ T attribute_engine<T>::get_attribute_value(
     }
 }
 
-template <typename T>
-void attribute_engine<T>::set_attribute_value(
-    const std::string& attribute_name,
-    const T& value
+template <typename key_type, typename val_type>
+void attribute_engine<key_type, val_type>::set_attribute_value(
+    const key_type& attribute_name,
+    const val_type& value
 )
 {
     if(_attribute_fcn_map.count(attribute_name) == 0)
@@ -54,7 +54,7 @@ void attribute_engine<T>::set_attribute_value(
     }
     else
     {
-        std::string error_message = "The attribute \"";
+        key_type error_message = "The attribute \"";
         error_message += attribute_name;
         error_message += "\" is read-only.";
 
@@ -62,11 +62,11 @@ void attribute_engine<T>::set_attribute_value(
     }
 }
 
-template <typename T>
-void attribute_engine<T>::register_attribute_fcns(
-    const std::string& attribute_name,
-    const getter_fcn<T>& getter,
-    const setter_fcn<T>& setter
+template <typename key_type, typename val_type>
+void attribute_engine<key_type, val_type>::register_attribute_fcns(
+    const key_type& attribute_name,
+    const getter_fcn<val_type>& getter,
+    const setter_fcn<val_type>& setter
 )
 {
     attribute_fcn_pair_t attribute_fcn_pair = {getter, setter};
@@ -77,10 +77,10 @@ void attribute_engine<T>::register_attribute_fcns(
     );
 }
 
-template <typename T>
-std::vector<std::string> attribute_engine<T>::get_attribute_names()
+template <typename key_type, typename val_type>
+std::vector<key_type> attribute_engine<key_type, val_type>::get_attribute_names()
 {
-    std::vector<std::string> ret;
+    std::vector<key_type> ret;
     for(const auto& attribute_iter: _attribute_fcn_map)
     {
         ret.emplace_back(attribute_iter.first);
@@ -90,9 +90,9 @@ std::vector<std::string> attribute_engine<T>::get_attribute_names()
     return ret;
 }
 
-template <typename T>
-const std::vector<T>& attribute_engine<T>::get_attribute_valid_values(
-    const std::string& attribute_name
+template <typename key_type, typename val_type>
+const std::vector<val_type>& attribute_engine<key_type, val_type>::get_attribute_valid_values(
+    const key_type& attribute_name
 )
 {
     if(_attribute_fcn_map.count(attribute_name) == 0)
@@ -109,26 +109,26 @@ const std::vector<T>& attribute_engine<T>::get_attribute_valid_values(
     }
 }
 
-template <typename T>
-void attribute_engine<T>::register_attribute_valid_values(
-    const std::string& attribute_name,
-    const std::vector<T>& valid_values
+template <typename key_type, typename val_type>
+void attribute_engine<key_type, val_type>::register_attribute_valid_values(
+    const key_type& attribute_name,
+    const std::vector<val_type>& valid_values
 )
 {
     register_attribute_valid_values(
         attribute_name,
-        std::move(std::vector<T>(valid_values))
+        std::move(std::vector<val_type>(valid_values))
     );
 }
 
-template <typename T>
-void attribute_engine<T>::register_attribute_valid_values(
-    const std::string& attribute_name,
-    std::vector<T>&& valid_values
+template <typename key_type, typename val_type>
+void attribute_engine<key_type, val_type>::register_attribute_valid_values(
+    const key_type& attribute_name,
+    std::vector<val_type>&& valid_values
 )
 {
     _attribute_valid_values_map.emplace(
-        std::move(std::string(attribute_name)),
+        std::move(key_type(attribute_name)),
         std::move(valid_values)
     );
 }

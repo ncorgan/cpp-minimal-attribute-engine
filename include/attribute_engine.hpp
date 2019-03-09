@@ -9,7 +9,6 @@
 #define INCLUDED_ATTRIBUTE_ENGINE_HPP
 
 #include <functional>
-#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -19,7 +18,7 @@ using getter_fcn = std::function<T(void)>;
 template <typename T>
 using setter_fcn = std::function<void(T)>;
 
-template <typename T>
+template <typename key_type, typename val_type>
 class attribute_engine
 {
     public:
@@ -35,48 +34,48 @@ class attribute_engine
         attribute_engine& operator=(attribute_engine&&) = default;
 #endif
 
-        T get_attribute_value(
-            const std::string& attribute_name
+        val_type get_attribute_value(
+            const key_type& attribute_name
         );
 
         void set_attribute_value(
-            const std::string& attribute_name,
-            const T& value
+            const key_type& attribute_name,
+            const val_type& value
         );
 
         void register_attribute_fcns(
-            const std::string& attribute_name,
-            const getter_fcn<T>& getter,
-            const setter_fcn<T>& setter
+            const key_type& attribute_name,
+            const getter_fcn<val_type>& getter,
+            const setter_fcn<val_type>& setter
         );
 
-        std::vector<std::string> get_attribute_names();
+        std::vector<key_type> get_attribute_names();
 
-        const std::vector<T>& get_attribute_valid_values(
-            const std::string& attribute_name
-        );
-
-        void register_attribute_valid_values(
-            const std::string& attribute_name,
-            const std::vector<T>& valid_values
+        const std::vector<val_type>& get_attribute_valid_values(
+            const key_type& attribute_name
         );
 
         void register_attribute_valid_values(
-            const std::string& attribute_name,
-            std::vector<T>&& valid_values
+            const key_type& attribute_name,
+            const std::vector<val_type>& valid_values
+        );
+
+        void register_attribute_valid_values(
+            const key_type& attribute_name,
+            std::vector<val_type>&& valid_values
         );
 
     private:
         struct attribute_fcn_pair_t
         {
-            getter_fcn<T> getter;
-            setter_fcn<T> setter;
+            getter_fcn<val_type> getter;
+            setter_fcn<val_type> setter;
         };
 
-        using attribute_fcn_map_t = std::unordered_map<std::string, attribute_fcn_pair_t>;
+        using attribute_fcn_map_t = std::unordered_map<key_type, attribute_fcn_pair_t>;
         attribute_fcn_map_t _attribute_fcn_map;
 
-        using attribute_valid_values_t = std::unordered_map<std::string, std::vector<T> >;
+        using attribute_valid_values_t = std::unordered_map<key_type, std::vector<val_type> >;
         attribute_valid_values_t _attribute_valid_values_map;
 };
 
