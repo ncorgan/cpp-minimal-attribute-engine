@@ -96,6 +96,7 @@ sudo: required
 dist: trusty
 
 before_install:
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get -y install libboost-dev; fi
   - git submodule update --init --recursive
 
 script:
