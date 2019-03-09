@@ -232,3 +232,29 @@ TEST(cpp_attribute_test, test_binding_class_functions)
     EXPECT_EQ("C", test_class.get_string_attribute("First string"));
     EXPECT_EQ("D", test_class.get_string_attribute("Second string"));
 }
+
+TEST(cpp_attribute_test, test_registering_lambdas)
+{
+    struct
+    {
+        int dummy_field;
+    } dummy_struct;
+    dummy_struct.dummy_field = 0;
+
+    attribute_engine<std::string, int> engine;
+
+    auto getter_lambda = [&dummy_struct]() { return dummy_struct.dummy_field; };
+    auto setter_lambda = [&dummy_struct](int var) { dummy_struct.dummy_field = var; };
+
+    const std::string attribute_name("foo");
+    constexpr int attribute_value = 5;
+
+    engine.register_attribute_fcns(
+        attribute_name,
+        getter_lambda,
+        setter_lambda
+    );
+
+    engine.set_attribute_value(attribute_name, attribute_value);
+    ASSERT_EQ(attribute_value, engine.get_attribute_value(attribute_name));
+}
