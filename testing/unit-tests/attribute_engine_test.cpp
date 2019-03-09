@@ -312,13 +312,33 @@ TEST(cpp_attribute_test, test_enum_key)
     ASSERT_EQ(5, engine.get_attribute_value(TEST_ENUM0));
 }
 
+enum class test_enum_class
+{
+    TEST0 = 0,
+    TEST1
+};
+
+// Hashing for enum classes weren't added until C++14, so we must
+// inject it ourselves.
+namespace std
+{
+    template <>
+    struct hash<test_enum_class>
+    {
+        typedef test_enum_class argument_type;
+        typedef std::size_t result_type;
+        result_type operator()(argument_type const& s) const noexcept
+        {
+            using hash_type = std::underlying_type<argument_type>::type;
+            static const std::hash<hash_type> underlying_hash;
+
+            return underlying_hash(static_cast<hash_type>(s));
+        }
+    };
+}
+
 TEST(cpp_attribute_test, test_enum_class_key)
 {
-    enum class test_enum_class
-    {
-        TEST0 = 0,
-        TEST1
-    };
     attribute_engine<test_enum_class, int> engine;
 
     engine.register_attribute_fcns(
