@@ -9,12 +9,6 @@ environment:
 #    - GENERATOR_NAME: "MinGW Makefiles"
 #      MINGW_DIR: "C:\\mingw-w64\\x86_64-6.3.0-posix-seh-rt_v5-rev1"
 
-    - GENERATOR_NAME: "Visual Studio 12 2013"
-      BOOST_VERSION: 1_58_0
-
-    - GENERATOR_NAME: "Visual Studio 12 2013 Win64"
-      BOOST_VERSION: 1_58_0
-
     - GENERATOR_NAME: "Visual Studio 14 2015"
       BOOST_VERSION: 1_63_0
 

@@ -40,8 +40,8 @@ every push to this repository is automatically tested under the following config
  * OS X 10.12.6 (x64)
    * AppleClang: 8.1.0.8020042
  * Windows Server 2012 R2 (x64)
-   * MSVC: 2013, 2015 (Win32, x64)
+   * MSVC: 2015 (Win32, x64)
  * Windows Server 2016 (x64)
    * MSVC: 2017 (Win32, x64)
 
-README last updated: 2019/03/09
+README last updated: 2019/03/10
