@@ -312,25 +312,6 @@ TEST(cpp_attribute_test, test_enum_key)
     ASSERT_EQ(5, engine.get_attribute_value(TEST_ENUM0));
 }
 
-TEST(cpp_attribute_test, test_enum_class_key)
-{
-    enum class test_enum_class
-    {
-        TEST0 = 0,
-        TEST1
-    };
-    attribute_engine<test_enum_class, int> engine;
-
-    engine.register_attribute_fcns(
-        test_enum_class::TEST0,
-        &getter_fcn,
-        &setter_fcn
-    );
-
-    engine.set_attribute_value(test_enum_class::TEST0, 0);
-    ASSERT_EQ(5, engine.get_attribute_value(test_enum_class::TEST0));
-}
-
 #ifdef TEST_BOOST_FUNCTION
 TEST(cpp_attribute_test, test_boost_function)
 {
