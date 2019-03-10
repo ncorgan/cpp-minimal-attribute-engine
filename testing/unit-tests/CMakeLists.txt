@@ -21,7 +21,7 @@ TARGET_LINK_LIBRARIES(attribute_engine_test gtest gtest_main)
 IF(WIN32)
     IF(MINGW)
         SET_SOURCE_FILES_PROPERTIES(attribute_engine_test.cpp
-            PROPERTIES COMPILE_FLAGS "-std=c++11"
+            PROPERTIES COMPILE_FLAGS "-std=c++14"
         )
     ELSE()
         SET_SOURCE_FILES_PROPERTIES(attribute_engine_test.cpp
@@ -35,7 +35,7 @@ IF(WIN32)
     )
 ELSE()
     SET_SOURCE_FILES_PROPERTIES(attribute_engine_test.cpp
-        PROPERTIES COMPILE_FLAGS "-std=c++11"
+        PROPERTIES COMPILE_FLAGS "-std=c++14"
     )
 
     ADD_TEST(

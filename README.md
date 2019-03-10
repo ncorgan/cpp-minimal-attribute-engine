@@ -28,7 +28,7 @@ TBD
 Supported Platforms
 -------------------------------------
 
-This class should be able to be used with any compiler that supports C++11.
+This class should be able to be used with any compiler that supports C++14.
 
 Using [Travis](https://travis-ci.org/ncorgan/cpp-minimal-attribute-engine) and
 [AppVeyor](https://ci.appveyor.com/project/ncorgan/cpp-minimal-attribute-engine),
