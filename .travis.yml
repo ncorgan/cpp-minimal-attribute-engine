@@ -152,15 +152,6 @@ matrix:
   - addons:
       apt:
         packages:
-        - clang-4.0
-        sources:
-        - llvm-toolchain-trusty-4.0
-    compiler: clang
-    env: CC=clang-4.0 CXX=clang++-4.0 std=c++17
-    os: linux
-  - addons:
-      apt:
-        packages:
         - clang-5.0
         sources:
         - llvm-toolchain-trusty-5.0
