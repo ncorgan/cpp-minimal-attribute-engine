@@ -47,8 +47,10 @@ if __name__ == "__main__":
         "platform": "x64",
         "configuration": "Release",
         "install": "git submodule update --init --recursive",
-        "matrix": {
-            "include" : msvc_nodes
+        "environment": {
+            "matrix": {
+                "include" : msvc_nodes
+            },
         },
         "build_script": [
             "mkdir build",
