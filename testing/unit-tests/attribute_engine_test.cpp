@@ -293,25 +293,6 @@ TEST(cpp_attribute_test, test_registering_function_pointers)
     );
 }
 
-TEST(cpp_attribute_test, test_enum_key)
-{
-    enum test_enum
-    {
-        TEST_ENUM0 = 0,
-        TEST_ENUM1
-    };
-    attribute_engine<test_enum, int> engine;
-
-    engine.register_attribute_fcns(
-        TEST_ENUM0,
-        &getter_fcn,
-        &setter_fcn
-    );
-
-    engine.set_attribute_value(TEST_ENUM0, 0);
-    ASSERT_EQ(5, engine.get_attribute_value(TEST_ENUM0));
-}
-
 #ifdef TEST_BOOST_FUNCTION
 TEST(cpp_attribute_test, test_boost_function)
 {
