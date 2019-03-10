@@ -24,6 +24,9 @@ TARGET_LINK_LIBRARIES(attribute_engine_test gtest gtest_main)
 #
 IF(NOT "$ENV{STD}" STREQUAL "")
     SET(CPP_STD "$ENV{STD}" CACHE INTERNAL "C++ standard")
+ELSEIF(MSVC)
+    # This is the first version supported by this flag.
+    SET(CPP_STD "c++14" CACHE INTERNAL "C++ standard")
 ELSE()
     SET(CPP_STD "c++11" CACHE INTERNAL "C++ standard")
 ENDIF()
@@ -34,9 +37,16 @@ IF(WIN32)
             PROPERTIES COMPILE_FLAGS "-std=${CPP_STD}"
         )
     ELSE()
-        SET_SOURCE_FILES_PROPERTIES(attribute_engine_test.cpp
-            PROPERTIES COMPILE_FLAGS "/MP /EHsc"
-        )
+        # The /std: flag was added in MSVC 14.0
+        IF(MSVC AND (MSVC_VERSION GREATER 1800))
+            SET_SOURCE_FILES_PROPERTIES(attribute_engine_test.cpp
+                PROPERTIES COMPILE_FLAGS "/MP /EHsc /std:${CPP_STD}"
+            )
+        ELSE()
+            SET_SOURCE_FILES_PROPERTIES(attribute_engine_test.cpp
+                PROPERTIES COMPILE_FLAGS "/MP /EHsc"
+            )
+        ENDIF()
     ENDIF()
 
     ADD_TEST(
