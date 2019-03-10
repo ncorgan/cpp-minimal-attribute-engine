@@ -21,6 +21,11 @@ def get_msvc_nodes_for_version(version):
         "BOOST_VERSION": version["boost"]
     }
 
+    # Appveyor currently runs their VS2017 builds on a different VM.
+    if version["num"] >= 15:
+        win32_base["APPVEYOR_BUILD_WORKER_IMAGE"] = "Visual Studio 2017"
+        win64_base["APPVEYOR_BUILD_WORKER_IMAGE"] = "Visual Studio 2017"
+
     ret = []
 
     if len(version["stds"]) > 0:

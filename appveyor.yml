@@ -20,22 +20,28 @@ environment:
   - BOOST_VERSION: '1_63_0'
     GENERATOR_NAME: Visual Studio 14 2015 Win64
     STD: c++14
-  - BOOST_VERSION: '1_69_0'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    BOOST_VERSION: '1_69_0'
     GENERATOR_NAME: Visual Studio 15 2017
     STD: c++14
-  - BOOST_VERSION: '1_69_0'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    BOOST_VERSION: '1_69_0'
     GENERATOR_NAME: Visual Studio 15 2017 Win64
     STD: c++14
-  - BOOST_VERSION: '1_69_0'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    BOOST_VERSION: '1_69_0'
     GENERATOR_NAME: Visual Studio 15 2017
     STD: c++17
-  - BOOST_VERSION: '1_69_0'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    BOOST_VERSION: '1_69_0'
     GENERATOR_NAME: Visual Studio 15 2017 Win64
     STD: c++17
-  - BOOST_VERSION: '1_69_0'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    BOOST_VERSION: '1_69_0'
     GENERATOR_NAME: Visual Studio 15 2017
     STD: c++latest
-  - BOOST_VERSION: '1_69_0'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    BOOST_VERSION: '1_69_0'
     GENERATOR_NAME: Visual Studio 15 2017 Win64
     STD: c++latest
 install: git submodule update --init --recursive
