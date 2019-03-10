@@ -18,10 +18,20 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 ADD_EXECUTABLE(attribute_engine_test attribute_engine_test.cpp)
 TARGET_LINK_LIBRARIES(attribute_engine_test gtest gtest_main)
 
+#
+# For GCC or Clang, if the caller specified a standard, override the
+# default (C++11).
+#
+IF(NOT "$ENV{STD}" STREQUAL "")
+    SET(CPP_STD "$ENV{STD}" CACHE INTERNAL "C++ standard")
+ELSE()
+    SET(CPP_STD "c++11" CACHE INTERNAL "C++ standard")
+ENDIF()
+
 IF(WIN32)
     IF(MINGW)
         SET_SOURCE_FILES_PROPERTIES(attribute_engine_test.cpp
-            PROPERTIES COMPILE_FLAGS "-std=c++11"
+            PROPERTIES COMPILE_FLAGS "-std=${CPP_STD}"
         )
     ELSE()
         SET_SOURCE_FILES_PROPERTIES(attribute_engine_test.cpp
@@ -35,7 +45,7 @@ IF(WIN32)
     )
 ELSE()
     SET_SOURCE_FILES_PROPERTIES(attribute_engine_test.cpp
-        PROPERTIES COMPILE_FLAGS "-std=c++11"
+        PROPERTIES COMPILE_FLAGS "-std=${CPP_STD}"
     )
 
     ADD_TEST(

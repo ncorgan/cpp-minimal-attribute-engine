@@ -6,8 +6,7 @@ matrix:
     - compiler: gcc
       os: linux
       env:
-        - CC=gcc
-        - CXX=g++
+        - CC=gcc CXX=g++ std=c++11
     - compiler: gcc
       os: linux
       addons:
@@ -17,8 +16,8 @@ matrix:
           packages:
             - g++-5
       env:
-        - CC=gcc-5
-        - CXX=g++-5
+        - CC=gcc-5 CXX=g++-5 std=c++11
+        - CC=gcc-5 CXX=g++-5 std=c++14
     - compiler: gcc
       os: linux
       addons:
@@ -28,8 +27,9 @@ matrix:
           packages:
             - g++-6
       env:
-        - CC=gcc-6
-        - CXX=g++-6
+        - CC=gcc-6 CXX=g++-6 std=c++11
+        - CC=gcc-6 CXX=g++-6 std=c++14
+        - CC=gcc-6 CXX=g++-6 std=c++17
     - compiler: gcc
       os: linux
       addons:
@@ -39,8 +39,9 @@ matrix:
           packages:
             - g++-7
       env:
-        - CC=gcc-7
-        - CXX=g++-7
+        - CC=gcc-7 CXX=g++-7 std=c++11
+        - CC=gcc-7 CXX=g++-7 std=c++14
+        - CC=gcc-7 CXX=g++-7 std=c++17
     - compiler: gcc
       os: linux
       addons:
@@ -50,13 +51,15 @@ matrix:
           packages:
             - g++-8
       env:
-        - CC=gcc-8
-        - CXX=g++-8
+        - CC=gcc-8 CXX=g++-8 std=c++11
+        - CC=gcc-8 CXX=g++-8 std=c++14
+        - CC=gcc-8 CXX=g++-8 std=c++17
+        - CC=gcc-8 CXX=g++-8 std=c++2a
     - compiler: clang
       os: linux
       env:
-        - CC=clang
-        - CXX=clang++
+        - CC=clang CXX=clang++ std=c++11
+        - CC=clang CXX=clang++ std=c++14
     - compiler: clang
       os: linux
       addons:
@@ -66,8 +69,8 @@ matrix:
           packages:
             - clang-4.0
       env:
-        - CC=clang-4.0
-        - CXX=clang++-4.0
+        - CC=clang CXX=clang++ std=c++11
+        - CC=clang CXX=clang++ std=c++14
     - compiler: clang
       os: linux
       addons:
@@ -77,8 +80,10 @@ matrix:
           packages:
             - clang-5.0
       env:
-        - CC=clang-5.0
-        - CXX=clang++-5.0
+        - CC=clang CXX=clang++ std=c++11
+        - CC=clang CXX=clang++ std=c++14
+        - CC=clang CXX=clang++ std=c++17
+        - CC=clang CXX=clang++ std=c++2a
 #    - compiler: clang
 #      os: linux
 #      addons:
