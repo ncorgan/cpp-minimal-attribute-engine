@@ -14,6 +14,7 @@
 #include <boost/function.hpp>
 #endif
 
+#include <cstdint>
 #include <functional>
 #include <vector>
 
@@ -27,180 +28,6 @@ static inline int getter_fcn()
 static inline void setter_fcn(int num)
 {
     (void)num;
-}
-
-// Test class containing an attribute engine
-
-class attribute_test_class
-{
-    public:
-        attribute_test_class():
-            _string_attribute_engine(),
-            _string_vector({"A","B"})
-        {
-            _register_attributes();
-        }
-
-        std::string get_string_attribute(
-            const std::string& attribute_name
-        )
-        {
-            return _string_attribute_engine.get_attribute_value(
-                       attribute_name
-                   );
-        }
-
-        void set_string_attribute(
-            const std::string& attribute_name,
-            const std::string& value
-        )
-        {
-            _string_attribute_engine.set_attribute_value(
-                attribute_name,
-                value
-            );
-        }
-
-    private:
-        attribute_engine<std::string, std::string> _string_attribute_engine;
-
-        std::vector<std::string> _string_vector;
-
-        std::string _get_string_from_vector(
-            size_t index
-        )
-        {
-            return _string_vector.at(index);
-        }
-
-        void _set_string_in_vector(
-            size_t index,
-            const std::string& value
-        )
-        {
-            _string_vector.at(index) = value;
-        }
-
-        void _register_attributes()
-        {
-            using std::placeholders::_1;
-
-            _string_attribute_engine.register_attribute_fcns(
-                "First string",
-                std::bind(
-                    &attribute_test_class::_get_string_from_vector,
-                    this,
-                    0
-                ),
-                std::bind(
-                    &attribute_test_class::_set_string_in_vector,
-                    this,
-                    0,
-                    _1
-                )
-            );
-            _string_attribute_engine.register_attribute_fcns(
-                "Second string",
-                std::bind(
-                    &attribute_test_class::_get_string_from_vector,
-                    this,
-                    1
-                ),
-                std::bind(
-                    &attribute_test_class::_set_string_in_vector,
-                    this,
-                    1,
-                    _1
-                )
-            );
-        }
-};
-
-TEST(cpp_attribute_test, test_registering)
-{
-    attribute_engine<std::string, int> int_attribute_engine;
-
-    int_attribute_engine.register_attribute_fcns(
-        "Attribute 1",
-        getter_fcn,
-        setter_fcn
-    );
-
-    EXPECT_EQ(5, int_attribute_engine.get_attribute_value("Attribute 1"));
-    int_attribute_engine.set_attribute_value("Attribute 1", 0);
-
-    // Test a read-only attribute.
-    int_attribute_engine.register_attribute_fcns(
-        "Attribute 2",
-        getter_fcn,
-        nullptr // No setter
-    );
-
-    EXPECT_EQ(5, int_attribute_engine.get_attribute_value("Attribute 2"));
-    EXPECT_THROW(
-        int_attribute_engine.set_attribute_value("Attribute 2", 0);
-    , std::invalid_argument);
-
-    // Test a write-only attribute.
-    int_attribute_engine.register_attribute_fcns(
-        "Attribute 3",
-        nullptr, // No getter
-        setter_fcn
-    );
-
-    EXPECT_THROW(
-        (void)int_attribute_engine.get_attribute_value("Attribute 3");
-    , std::invalid_argument);
-    int_attribute_engine.set_attribute_value("Attribute 3", 0);
-
-    // Test registering by moving parameters.
-    auto getter_to_move = &getter_fcn;
-    auto setter_to_move = &setter_fcn;
-
-    const std::string attribute_name("Attribute 4");
-    std::string attribute_name_to_move(attribute_name);
-
-    int_attribute_engine.register_attribute_fcns(
-        std::move(attribute_name_to_move),
-        std::move(getter_to_move),
-        std::move(setter_to_move)
-    );
-
-    EXPECT_EQ(5, int_attribute_engine.get_attribute_value(attribute_name));
-    int_attribute_engine.set_attribute_value(attribute_name, 0);
-
-    // TODO: test overriding existing attribute
-}
-
-TEST(cpp_attribute_test, test_get_attribute_names)
-{
-    attribute_engine<std::string, std::string> string_attribute_engine;
-
-    // Register some attributes that don't do anything for the sake of test.
-    string_attribute_engine.register_attribute_fcns(
-        "Attribute 1",
-        nullptr,
-        nullptr
-    );
-    string_attribute_engine.register_attribute_fcns(
-        "Attribute 2",
-        nullptr,
-        nullptr
-    );
-    string_attribute_engine.register_attribute_fcns(
-        "Attribute 3",
-        nullptr,
-        nullptr
-    );
-
-    const std::vector<std::string> expected_names =
-    {
-        "Attribute 1",
-        "Attribute 2",
-        "Attribute 3"
-    };
-
-    EXPECT_EQ(expected_names, string_attribute_engine.get_attribute_names());
 }
 
 TEST(cpp_attribute_test, test_valid_values)
@@ -237,110 +64,301 @@ TEST(cpp_attribute_test, test_valid_values)
     );
 }
 
-TEST(cpp_attribute_test, test_binding_class_functions)
+///////////////
+// OLD ABOVE //
+///////////////
+
+// Use SFINAE magic to add test functions for different types.
+// TODO: add function to get valid/invalid values to migrate remaining test.
+
+template <typename return_type, typename test_type>
+using return_if_type_is_enum_or_numeric = typename
+                                          std::enable_if<
+                                              std::is_enum<test_type>::value ||
+                                              std::is_arithmetic<test_type>::value,
+                                              return_type
+                                          >::type;
+
+template <typename key_type>
+return_if_type_is_enum_or_numeric<void, key_type> get_test_keys(
+    key_type* p_key1_out,
+    key_type* p_key2_out,
+    key_type* p_key3_out
+)
 {
-    attribute_test_class test_class;
+    ASSERT_NE(nullptr, p_key1_out);
+    ASSERT_NE(nullptr, p_key2_out);
+    ASSERT_NE(nullptr, p_key3_out);
 
-    // Test default values.
-    EXPECT_EQ("A", test_class.get_string_attribute("First string"));
-    EXPECT_EQ("B", test_class.get_string_attribute("Second string"));
-
-    // Set values.
-    test_class.set_string_attribute("First string", "C");
-    test_class.set_string_attribute("Second string", "D");
-
-    // Test new values.
-    EXPECT_EQ("C", test_class.get_string_attribute("First string"));
-    EXPECT_EQ("D", test_class.get_string_attribute("Second string"));
+    (*p_key1_out) = static_cast<key_type>(0);
+    (*p_key2_out) = static_cast<key_type>(1);
+    (*p_key3_out) = static_cast<key_type>(2);
 }
 
-TEST(cpp_attribute_test, test_registering_lambdas)
+template <typename key_type>
+detail::return_if_types_match<void, key_type, std::string> get_test_keys(
+    key_type* p_key1_out,
+    key_type* p_key2_out,
+    key_type* p_key3_out
+)
 {
-    struct
-    {
-        int dummy_field;
-    } dummy_struct;
-    dummy_struct.dummy_field = 0;
+    ASSERT_NE(nullptr, p_key1_out);
+    ASSERT_NE(nullptr, p_key2_out);
+    ASSERT_NE(nullptr, p_key3_out);
 
-    attribute_engine<std::string, int> engine;
+    p_key1_out->assign("Key 1");
+    p_key2_out->assign("Key 2");
+    p_key3_out->assign("Key 3");
+}
 
-    const std::string attribute_name("foo");
-    const int attribute_value = 5;
+enum test_enum
+{
+    VAL0 = 0,
+    VAL1,
+    VAL2
+};
 
-    engine.register_attribute_fcns(
-        attribute_name,
-        [&dummy_struct]() {return dummy_struct.dummy_field; },
-        [&dummy_struct](int var) { dummy_struct.dummy_field = var; }
+enum class test_enum_class: unsigned short
+{
+    CLASS_VAL0 = 0,
+    CLASS_VAL1,
+    CLASS_VAL2
+};
+
+template <typename key_type>
+class attribute_test: public ::testing::Test
+{
+    public:
+
+        using val_type = std::string;
+
+        static key_type key1;
+        static key_type key2;
+        static key_type key3;
+
+        static const val_type test_value;
+        static val_type static_value;
+
+        attribute_engine<key_type, val_type> engine;
+        val_type var_in_class;
+
+        virtual void TearDown()
+        {
+            static_value.clear();
+        }
+
+        static void SetUpTestCase()
+        {
+            ASSERT_NO_FATAL_FAILURE(get_test_keys<key_type>(
+                &key1,
+                &key2,
+                &key3
+            ));
+        }
+
+        val_type class_getter()
+        {
+            return var_in_class;
+        }
+
+        void class_setter(const val_type& val)
+        {
+            var_in_class = val;
+        }
+
+        // Make this static so the function signature is val_type(void) instead
+        // of val_type(attribute_test<key_type>).
+        static val_type static_getter()
+        {
+            return static_value;
+        }
+
+        // Make this static so the function signature is void(const val_type&)
+        // instead of void(attribute_test<key_type>, const val_type&).
+        static void static_setter(const val_type& val)
+        {
+            static_value = val;
+        }
+
+        void test_set_and_get(const key_type& key)
+        {
+            engine.set_attribute_value(key, test_value);
+            ASSERT_EQ(test_value, engine.get_attribute_value(key));
+        }
+};
+
+template <typename key_type>
+key_type attribute_test<key_type>::key1;
+
+template <typename key_type>
+key_type attribute_test<key_type>::key2;
+
+template <typename key_type>
+key_type attribute_test<key_type>::key3;
+
+template <typename key_type>
+const typename attribute_test<key_type>::val_type attribute_test<key_type>::test_value("ABCDEFG");
+
+template <typename key_type>
+typename attribute_test<key_type>::val_type attribute_test<key_type>::static_value;
+
+// TODO: parameterize enum testing based on compiler support
+using key_types = ::testing::Types<
+    char,
+    uint8_t,
+    uint16_t,
+    uint32_t,
+    uint64_t,
+    int8_t,
+    int16_t,
+    int32_t,
+    int64_t,
+#if 0
+    test_enum,
+    test_enum_class,
+#endif
+    std::string
+>;
+TYPED_TEST_CASE(attribute_test, key_types);
+
+TYPED_TEST(attribute_test, set_and_get_with_function_params)
+{
+    using key_type = TypeParam;
+    using test_class = attribute_test<TypeParam>;
+
+    const key_type& key = test_class::key1;
+
+    this->engine.register_attribute_fcns(
+        key,
+        &test_class::static_getter,
+        &test_class::static_setter
     );
 
-    engine.set_attribute_value(attribute_name, attribute_value);
-    ASSERT_EQ(attribute_value, engine.get_attribute_value(attribute_name));
+    ASSERT_NO_FATAL_FAILURE(this->test_set_and_get(key));
+
+    // Sanity check.
+    ASSERT_EQ(test_class::test_value, test_class::static_value);
 }
 
-TEST(cpp_attribute_test, test_registering_function_pointers)
+TYPED_TEST(attribute_test, set_and_get_with_lambdas)
 {
-    attribute_engine<std::string, int> engine;
+    using key_type = TypeParam;
+    using test_class = attribute_test<TypeParam>;
+    using val_type = typename test_class::val_type;
 
-    const std::string attribute_name("foo");
+    const key_type& key = test_class::key1;
 
-    int (*getter_fptr)(void) = &getter_fcn;
-    void (*setter_fptr)(int) = &setter_fcn;
+    // The lambdas will put the values here.
+    val_type var_in_test_body;
 
-    engine.register_attribute_fcns(
-        attribute_name,
+    this->engine.register_attribute_fcns(
+        key,
+        [&var_in_test_body]() { return var_in_test_body; },
+        [&var_in_test_body](const val_type& val) { var_in_test_body = val; }
+    );
+
+    ASSERT_NO_FATAL_FAILURE(this->test_set_and_get(key));
+
+    // Sanity check.
+    ASSERT_EQ(test_class::test_value, var_in_test_body);
+}
+
+TYPED_TEST(attribute_test, set_and_get_with_bound_class_functions)
+{
+    using key_type = TypeParam;
+    using test_class = attribute_test<TypeParam>;
+
+    const key_type& key = test_class::key1;
+
+    this->engine.register_attribute_fcns(
+        key,
+        std::bind(
+            &test_class::class_getter,
+            this
+        ),
+        std::bind(
+            &test_class::class_setter,
+            this,
+            std::placeholders::_1
+        )
+    );
+
+    ASSERT_NO_FATAL_FAILURE(this->test_set_and_get(key));
+
+    // Sanity check.
+    ASSERT_EQ(test_class::test_value, this->var_in_class);
+}
+
+TYPED_TEST(attribute_test, set_and_get_with_function_pointers)
+{
+    using key_type = TypeParam;
+    using test_class = attribute_test<TypeParam>;
+    using val_type = typename test_class::val_type;
+
+    const key_type& key = test_class::key1;
+
+    // This will point to the same functions as set_and_get_with_function_params,
+    // but this test explicitly passes in caller-created function pointers.
+    val_type (*getter_fptr)(void) = &test_class::static_getter;
+    void (*setter_fptr)(const val_type&) = &test_class::static_setter;
+
+    this->engine.register_attribute_fcns(
+        key,
         getter_fptr,
         setter_fptr
     );
+
+    ASSERT_NO_FATAL_FAILURE(this->test_set_and_get(key));
+
+    // Sanity check.
+    ASSERT_EQ(test_class::test_value, test_class::static_value);
 }
 
 #ifdef TEST_BOOST_FUNCTION
-TEST(cpp_attribute_test, test_boost_function)
+TYPED_TEST(attribute_test, set_and_get_with_boost_function)
 {
-    attribute_engine<std::string, int> engine;
+    using key_type = TypeParam;
+    using test_class = attribute_test<TypeParam>;
+    using val_type = typename test_class::val_type;
 
-    const std::string attribute_name("foo");
+    const key_type& key = test_class::key1;
 
-    boost::function<int(void)> boost_getter_fcn = &getter_fcn;
-    boost::function<void(int)> boost_setter_fcn = &setter_fcn;
+    // This will point to the same functions as set_and_get_with_function_params,
+    // but this test explicitly passes in caller-created boost::functions.
+    boost::function<val_type(void)> boost_getter_fcn = &test_class::static_getter;
+    boost::function<void(val_type)> boost_setter_fcn = &test_class::static_setter;
 
-    engine.register_attribute_fcns(
-        attribute_name,
+    this->engine.register_attribute_fcns(
+        key,
         boost_getter_fcn,
         boost_setter_fcn
     );
+
+    ASSERT_NO_FATAL_FAILURE(this->test_set_and_get(key));
+
+    // Sanity check.
+    ASSERT_EQ(test_class::test_value, test_class::static_value);
 }
 
-int getter_for_bind(int int1)
+TYPED_TEST(attribute_test, set_and_get_with_boost_bind)
 {
-    (void)int1;
-    return getter_fcn();
-}
+    using key_type = TypeParam;
+    using test_class = attribute_test<TypeParam>;
+    using val_type = typename test_class::val_type;
 
-void setter_for_bind(int int1, int int2)
-{
-    (void)int1;
-    setter_fcn(int2);
-}
+    const key_type& key = test_class::key1;
 
-TEST(cpp_attribute_test, test_boost_bind)
-{
-    attribute_engine<std::string, int> engine;
-
-    const int int_param = 5;
-
-    auto bound_getter = boost::bind(&getter_for_bind, int_param);
-    auto bound_setter = boost::bind(&setter_for_bind, int_param, _1);
-
-    const std::string attribute_name("foo");
-    const int attribute_value = 5;
-
-    engine.register_attribute_fcns(
-        attribute_name,
-        bound_getter,
-        bound_setter
+    // This will point to the same functions as set_and_get_with_function_params,
+    // but this test explicitly passes in caller-created boost::binds.
+    this->engine.register_attribute_fcns(
+        key,
+        boost::bind(&test_class::static_getter),
+        boost::bind(&test_class::static_setter, _1)
     );
 
-    engine.set_attribute_value(attribute_name, attribute_value);
-    ASSERT_EQ(attribute_value, engine.get_attribute_value(attribute_name));
+    ASSERT_NO_FATAL_FAILURE(this->test_set_and_get(key));
+
+    // Sanity check.
+    ASSERT_EQ(test_class::test_value, test_class::static_value);
 }
 #endif

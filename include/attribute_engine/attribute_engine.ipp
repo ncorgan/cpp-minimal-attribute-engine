@@ -66,7 +66,7 @@ void attribute_engine<key_type, val_type>::register_attribute_fcns(
     attribute_fcn_pair_t attribute_fcn_pair = {getter, setter};
 
     _attribute_fcn_map.emplace(
-        std::move(std::string(attribute_name)),
+        std::move(key_type(attribute_name)),
         std::move(attribute_fcn_pair)
     );
 }
